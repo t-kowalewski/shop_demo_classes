@@ -10,6 +10,11 @@ class Product {
 class ShoppingCart {
   items = [];
 
+  addProduct(product) {
+    this.items.push(product);
+    this.totalOutput.innerHTML = `<h2>Total $${1}</h2>`;
+  }
+
   render() {
     const cartEl = document.createElement('section');
     cartEl.classList.add('cart');
@@ -17,6 +22,7 @@ class ShoppingCart {
       <h2>Total $${0}</h2>
       <button>Order Now</button>
     `;
+    this.totalOutput = cartEl.querySelector('h2');
     return cartEl;
   }
 }
@@ -27,8 +33,7 @@ class ProductElement {
   }
 
   addToCart() {
-    console.log('Added to cart');
-    console.log(this.product);
+    App.addProductToCart(this.product); // ***********
   }
 
   render() {
@@ -88,12 +93,26 @@ class Shop {
     const productList = new ProductList();
     const renderedProdList = productList.render();
 
-    const cart = new ShoppingCart();
-    const renderedCart = cart.render();
+    this.cart = new ShoppingCart();
+    const renderedCart = this.cart.render();
 
     mainDiv.append(renderedProdList, renderedCart);
   }
 }
 
-const shop = new Shop();
-shop.render();
+// Main Class with Static Properties & Methods
+class App {
+  static cart;
+
+  static init() {
+    const shop = new Shop();
+    shop.render();
+    this.cart = shop.cart;
+  }
+
+  static addProductToCart(product) {
+    this.cart.addProduct(product);
+  }
+}
+
+App.init();
