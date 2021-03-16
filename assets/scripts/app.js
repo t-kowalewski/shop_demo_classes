@@ -7,7 +7,36 @@ class Product {
   }
 }
 
-class ShoppingCart {
+class ElementAttribute {
+  constructor(attrName, attrValue) {
+    this.name = attrName;
+    this.value = attrValue;
+  }
+}
+
+// Root Parent Component for Inheritance
+class Component {
+  constructor(renderHookId) {
+    this.hookId = renderHookId;
+  }
+
+  createRootElement(tag, cssClasses, attributesArr) {
+    const element = document.createElement(tag);
+    if (cssClasses) {
+      element.className = cssClasses;
+    }
+    if (attributesArr && attributesArr.length > 0) {
+      for (const attr of attributesArr) {
+        element.setAttribute(attr.name, attr.value);
+      }
+    }
+
+    document.getElementById(this.hookId).append(element);
+    return element;
+  }
+}
+
+class ShoppingCart extends Component {
   items = [];
 
   // Setter
@@ -23,23 +52,23 @@ class ShoppingCart {
     return this.items.reduce((acc, currVal) => acc + currVal.price, 0);
   }
 
+  constructor(renderHookId) {
+    super(renderHookId);
+  }
+
   addProduct(product) {
-    // this.items.push(product);
-    // this.totalOutput.innerHTML = `<h2>Total $${this.totalAmount}</h2>`;
     const updatedItems = [...this.items];
     updatedItems.push(product);
     this.cartItems = updatedItems;
   }
 
   render() {
-    const cartEl = document.createElement('section');
-    cartEl.classList.add('cart');
+    const cartEl = this.createRootElement('section', 'cart');
     cartEl.innerHTML = `
       <h2>Total $${0}</h2>
       <button>Order Now</button>
     `;
     this.totalOutput = cartEl.querySelector('h2');
-    return cartEl;
   }
 }
 
@@ -109,10 +138,11 @@ class Shop {
     const productList = new ProductList();
     const renderedProdList = productList.render();
 
-    this.cart = new ShoppingCart();
-    const renderedCart = this.cart.render();
+    this.cart = new ShoppingCart('app');
+    console.log('🚀 ~ Shop ~ render ~ cart', this.cart);
+    this.cart.render();
 
-    mainDiv.append(renderedProdList, renderedCart);
+    mainDiv.append(renderedProdList);
   }
 }
 
