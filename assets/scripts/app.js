@@ -139,7 +139,6 @@ class Shop {
     const renderedProdList = productList.render();
 
     this.cart = new ShoppingCart('app');
-    console.log('🚀 ~ Shop ~ render ~ cart', this.cart);
     this.cart.render();
 
     mainDiv.append(renderedProdList);
