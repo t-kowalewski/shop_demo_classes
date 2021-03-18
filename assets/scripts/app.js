@@ -16,9 +16,14 @@ class ElementAttribute {
 
 // Root Parent Component for Inheritance
 class Component {
-  constructor(renderHookId) {
+  constructor(renderHookId, doRender = true) {
     this.hookId = renderHookId;
+    if (doRender) {
+      this.render();
+    }
   }
+
+  render() {}
 
   createRootElement(tag, cssClasses, attributesArr) {
     const element = document.createElement(tag);
@@ -74,8 +79,9 @@ class ShoppingCart extends Component {
 
 class ProductElement extends Component {
   constructor(product, renderHookId) {
-    super(renderHookId);
+    super(renderHookId, false);
     this.product = product;
+    this.render();
   }
 
   addToCart() {
@@ -101,23 +107,36 @@ class ProductElement extends Component {
 }
 
 class ProductList extends Component {
-  products = [
-    new Product(
-      'Hat',
-      'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.taghats.com%2Fwp-content%2Fuploads%2F2015%2F12%2FBlue-Bucket-Hat-Pictures.jpg&f=1&nofb=1',
-      19.95,
-      'Cool hat'
-    ),
-    new Product(
-      'T-Shirt',
-      'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.topman.com%2Fi%2FTopMan%2FTM71B20RGRN_F_1.jpg%3F%24Zoom%24&f=1&nofb=1',
-      15.95,
-      'Classic T-shirt'
-    ),
-  ];
+  products = [];
 
   constructor(renderHookId) {
     super(renderHookId);
+    this.fetchProducts();
+  }
+
+  fetchProducts() {
+    this.products = [
+      new Product(
+        'Hat',
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.taghats.com%2Fwp-content%2Fuploads%2F2015%2F12%2FBlue-Bucket-Hat-Pictures.jpg&f=1&nofb=1',
+        19.95,
+        'Cool hat'
+      ),
+      new Product(
+        'T-Shirt',
+        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.topman.com%2Fi%2FTopMan%2FTM71B20RGRN_F_1.jpg%3F%24Zoom%24&f=1&nofb=1',
+        15.95,
+        'Classic T-shirt'
+      ),
+    ];
+
+    this.renderProducts();
+  }
+
+  renderProducts() {
+    for (const product of this.products) {
+      new ProductElement(product, 'prod-list');
+    }
   }
 
   render() {
@@ -125,20 +144,20 @@ class ProductList extends Component {
       new ElementAttribute('id', 'prod-list'),
     ]);
 
-    for (const product of this.products) {
-      const prodEl = new ProductElement(product, 'prod-list');
-      prodEl.render();
+    if (this.products && this.products.length > 0) {
+      this.renderProducts();
     }
   }
 }
 
-class Shop {
-  render() {
-    const productList = new ProductList('app');
-    productList.render();
+class Shop extends Component {
+  constructor() {
+    super();
+  }
 
+  render() {
+    new ProductList('app');
     this.cart = new ShoppingCart('app');
-    this.cart.render();
   }
 }
 
@@ -148,7 +167,6 @@ class App {
 
   static init() {
     const shop = new Shop();
-    shop.render();
     this.cart = shop.cart;
   }
 
