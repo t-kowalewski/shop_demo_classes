@@ -67,6 +67,16 @@ class ShoppingCart extends Component {
     this.cartItems = updatedItems;
   }
 
+  orderProducts() {
+    console.log('ordering...');
+    console.log(this.items);
+  }
+  // Field holding a Function
+  // orderProducts = () => {
+  //   console.log('ordering...');
+  //   console.log(this.items);
+  // };
+
   render() {
     const cartEl = this.createRootElement('section', 'cart');
     cartEl.innerHTML = `
@@ -74,6 +84,10 @@ class ShoppingCart extends Component {
       <button>Order Now</button>
     `;
     this.totalOutput = cartEl.querySelector('h2');
+    const orderBtn = cartEl.querySelector('button');
+    // orderBtn.addEventListener('click', this.orderProducts.bind(this));
+    orderBtn.addEventListener('click', () => this.orderProducts());
+    // orderBtn.addEventListener('click', this.orderProducts);
   }
 }
 
