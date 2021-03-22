@@ -121,15 +121,16 @@ class ProductElement extends Component {
 }
 
 class ProductList extends Component {
-  products = [];
+  _products = [];
 
   constructor(renderHookId) {
-    super(renderHookId);
+    super(renderHookId, false);
+    this.render();
     this.fetchProducts();
   }
 
   fetchProducts() {
-    this.products = [
+    this._products = [
       new Product(
         'Hat',
         'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.taghats.com%2Fwp-content%2Fuploads%2F2015%2F12%2FBlue-Bucket-Hat-Pictures.jpg&f=1&nofb=1',
@@ -148,7 +149,7 @@ class ProductList extends Component {
   }
 
   renderProducts() {
-    for (const product of this.products) {
+    for (const product of this._products) {
       new ProductElement(product, 'prod-list');
     }
   }
@@ -158,7 +159,7 @@ class ProductList extends Component {
       new ElementAttribute('id', 'prod-list'),
     ]);
 
-    if (this.products && this.products.length > 0) {
+    if (this._products && this._products.length > 0) {
       this.renderProducts();
     }
   }
